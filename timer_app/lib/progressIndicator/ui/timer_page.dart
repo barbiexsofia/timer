@@ -32,9 +32,15 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
 
   void notify() {
     if (countText == '00:00') {
-      print("DONE!");
-      FlutterRingtonePlayer().play(fromAsset: "alarm-clock-short-6402.mp3");
+      isPlaying = false;
+      FlutterRingtonePlayer().play(
+          fromAsset: "lib/assets/sound/alarm-clock-short-6402.mp3",
+          volume: 1.0);
     }
+  }
+
+  void stopSound() {
+    FlutterRingtonePlayer().stop(); // Stop the currently playing sound
   }
 
   @override
@@ -132,7 +138,6 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                       setState(() {
                         isPlaying = true;
                       });
-                      print("PLAY");
                     }
                   },
                   child: RoundButton(
@@ -142,6 +147,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                 GestureDetector(
                   onTap: () {
                     controller.reset();
+                    stopSound();
                     setState(() {
                       isPlaying = false;
                     });
