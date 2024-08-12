@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // ignore: unnecessary_import
 import 'package:flutter/widgets.dart';
+import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:timer_app/widgets/round_button.dart';
 
 class TimerPage extends StatefulWidget {
@@ -27,11 +28,33 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
         : '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  double progress = 1.0;
+
+  void notify() {
+    if (countText == '00:00') {
+      print("DONE!");
+      FlutterRingtonePlayer().play(fromAsset: "alarm-clock-short-6402.mp3");
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     controller = AnimationController(
         vsync: this, duration: const Duration(seconds: 120));
+
+    controller.addListener(() {
+      notify();
+      if (controller.isAnimating) {
+        setState(() {
+          progress = controller.value;
+        });
+      } else {
+        setState(() {
+          progress = 1.0;
+        });
+      }
+    });
   }
 
   @override
@@ -47,31 +70,45 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
       body: Column(
         children: [
           Expanded(
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) => Container(
-                            height: 300,
-                            child: CupertinoTimerPicker(
-                              onTimerDurationChanged: (time) {
-                                setState(() {
-                                  controller.duration = time;
-                                });
-                              },
-                            ),
-                          ));
-                },
-                child: AnimatedBuilder(
-                  animation: controller,
-                  builder: (context, child) => Text(
-                    countText,
-                    style: const TextStyle(
-                        fontSize: 60, fontWeight: FontWeight.bold),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                    height: 300,
+                    width: 300,
+                    child: CircularProgressIndicator(
+                      value: progress,
+                      backgroundColor: Colors.grey.shade300,
+                      strokeWidth: 6,
+                    )),
+                GestureDetector(
+                  onTap: () {
+                    if (controller.isDismissed) {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) => Container(
+                                height: 300,
+                                child: CupertinoTimerPicker(
+                                  initialTimerDuration: controller.duration!,
+                                  onTimerDurationChanged: (time) {
+                                    setState(() {
+                                      controller.duration = time;
+                                    });
+                                  },
+                                ),
+                              ));
+                    }
+                  },
+                  child: AnimatedBuilder(
+                    animation: controller,
+                    builder: (context, child) => Text(
+                      countText,
+                      style: const TextStyle(
+                          fontSize: 60, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
           Padding(
