@@ -72,6 +72,15 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Go back to the previous page
+          },
+        ),
+        title: const Text('Timer Page'),
+      ),
       backgroundColor: Colors.white,
       body: Column(
         children: [
@@ -80,8 +89,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
               alignment: Alignment.center,
               children: [
                 SizedBox(
-                    height: 300,
-                    width: 300,
+                    height: 280,
+                    width: 280,
                     child: CircularProgressIndicator(
                       value: progress,
                       backgroundColor: Colors.grey.shade300,

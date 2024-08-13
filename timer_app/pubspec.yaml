@@ -39,6 +39,12 @@ dependencies:
   firebase_auth: ^5.1.4
   cloud_firestore: ^5.2.1
   flutter_ringtone_player: ^4.0.0+3
+  material_symbols_icons: ^4.2780.0
+  font_awesome_flutter: ^10.7.0
+  bloc: ^8.1.4
+  flutter_bloc: ^8.1.6
+  meta: ^1.12.0
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
